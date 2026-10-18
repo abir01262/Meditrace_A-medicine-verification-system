@@ -1,0 +1,454 @@
+:root{
+  --bg-top: #EAF4FB;
+  --bg-mid: #F7FBFD;
+  --bg-bottom: #FFFFFF;
+  --line: #3FA0C9;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+}
+
+body {
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+
+  background-color: var(--bg-mid);
+  background-image:
+    url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cdefs%3E%3Cfilter id='soft'%3E%3CfeGaussianBlur stdDeviation='0.8'/%3E%3C/filter%3E%3C/defs%3E%3Cg filter='url(%23soft)' fill='none' stroke='%23157FA8' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round' opacity='0.28'%3E%3C!-- capsule --%3E%3Crect x='16' y='24' width='34' height='16' rx='8' transform='rotate(-20 33 32)'/%3E%3Cline x1='26' y1='16' x2='40' y2='48' transform='rotate(-20 33 32)'/%3E%3C!-- round pill split --%3E%3Ccircle cx='112' cy='24' r='11'/%3E%3Cline x1='112' y1='13' x2='112' y2='35'/%3E%3C!-- syringe --%3E%3Cpath d='M18 100l22-22'/%3E%3Cpath d='M34 88l10-10 6 6-10 10z'/%3E%3Cpath d='M46 76l6-6M50 80l6-6'/%3E%3Cpath d='M16 102l-4 4'/%3E%3C!-- cross --%3E%3Crect x='120' y='90' width='8' height='24' rx='2'/%3E%3Crect x='112' y='98' width='24' height='8' rx='2'/%3E%3C!-- heartbeat line --%3E%3Cpath d='M60 130h10l6-14 8 24 6-16 4 6h12'/%3E%3C!-- stethoscope --%3E%3Cpath d='M70 20c0 10 0 16 8 16s8-6 8-16'/%3E%3Ccircle cx='78' cy='44' r='6'/%3E%3C!-- thermometer --%3E%3Crect x='142' y='54' width='8' height='28' rx='4'/%3E%3Ccircle cx='146' cy='88' r='7'/%3E%3C!-- small plus dots --%3E%3Cpath d='M4 50h6M7 47v6'/%3E%3Cpath d='M150 130h6M153 127v6'/%3E%3C/g%3E%3C/svg%3E"),
+    linear-gradient(160deg, var(--bg-top) 0%, var(--bg-mid) 55%, var(--bg-bottom) 100%);
+
+  background-repeat: repeat, no-repeat;
+  background-position: 0 0, center;
+  background-size: 130px 130px, cover;
+  background-attachment: fixed;
+}
+
+
+/* ================================================================
+   GLASS-MORPHISM LOGIN ISLAND (always visible, split in 2)
+   NOTE: this element IS the <form> itself, so its action/inputs
+   all live inside here - and so does the ":has()" reach below.
+================================================================ */
+.login-island{
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(94%, 920px);
+  min-height: 460px;
+  display: flex;
+  margin: 0;
+
+  background: rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(40px) saturate(220%);
+  -webkit-backdrop-filter: blur(40px) saturate(220%);
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  border-radius: 30px;
+  box-shadow:
+    0 30px 80px rgba(21, 127, 168, 0.35),
+    inset 0 1px 1px rgba(255, 255, 255, 0.6),
+    inset 0 0 40px rgba(255, 255, 255, 0.12);
+  overflow: hidden;
+}
+
+/* ----------------------------------------------------------------
+   LEFT PANEL
+---------------------------------------------------------------- */
+.island-left{
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6em;
+  padding: 2.4em 1.6em;
+  text-align: center;
+}
+
+.island-left .brand-title{
+  margin: 0;
+  display: flex;
+  align-items: center;
+  font-size: 2em;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: #123A37;
+}
+
+.island-left .syringe-i{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 0.7em;
+  height: 1.7em;
+  margin: 0 -0.02em;
+}
+
+.island-left .syringe-i svg{
+  width: 1.7em;
+  height: 0.68em;
+  transform: rotate(90deg);
+}
+
+/* Cycling tagline: "Verify" -> "trace" -> "be safe", looping forever */
+.tagline-cycle{
+  position: relative;
+  height: 1.5em;
+  width: 8ch;
+  font-size: 1.05em;
+  font-weight: 700;
+  color: #157FA8;
+}
+
+.tagline-word{
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  overflow: hidden;
+  width: 0;
+  border-right: 2px solid #157FA8;
+  opacity: 0;
+  animation-duration: 9s;
+  animation-iteration-count: infinite;
+  animation-fill-mode: backwards;
+}
+
+.word-1{ animation-name: cycleVerify;  animation-delay: 0s; }
+.word-2{ animation-name: cycleTrace;   animation-delay: 3s; }
+.word-3{ animation-name: cycleBeSafe;  animation-delay: 6s; }
+
+@keyframes cycleVerify{
+  0%   { width: 0;   opacity: 0; }
+  5%   { width: 6ch; opacity: 1; }
+  30%  { width: 6ch; opacity: 1; }
+  34%  { width: 0;   opacity: 0; }
+  100% { width: 0;   opacity: 0; }
+}
+@keyframes cycleTrace{
+  0%   { width: 0;   opacity: 0; }
+  5%   { width: 5ch; opacity: 1; }
+  30%  { width: 5ch; opacity: 1; }
+  34%  { width: 0;   opacity: 0; }
+  100% { width: 0;   opacity: 0; }
+}
+@keyframes cycleBeSafe{
+  0%   { width: 0;   opacity: 0; }
+  5%   { width: 7ch; opacity: 1; }
+  30%  { width: 7ch; opacity: 1; }
+  34%  { width: 0;   opacity: 0; }
+  100% { width: 0;   opacity: 0; }
+}
+
+/* Role logo preview: all hidden by default except the placeholder;
+   ":has()" rules further down show the matching one instead once
+   a real role is selected. */
+.role-logo-display{
+  width: 4.5em;
+  height: 4.5em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0.4em;
+}
+
+.role-logo{
+  display: none;
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: #157FA8;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.logo-default{ display: block; opacity: 0.5; }
+
+.selected-role-name{
+  margin: 0;
+  font-size: 1.05em;
+  font-weight: 700;
+  color: #123A37;
+}
+
+.selected-role-name span{ display: none; }
+.role-name-default{ display: inline; color: #5C7A76; font-weight: 600; }
+
+/* ----------------------------------------------------------------
+   MIDDLE DIVIDER
+---------------------------------------------------------------- */
+.island-divider{
+  width: 1px;
+  background: rgba(21, 127, 168, 0.25);
+  margin: 2em 0;
+}
+
+/* ----------------------------------------------------------------
+   RIGHT PANEL: the sign-in form
+---------------------------------------------------------------- */
+.island-right{
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.5em;
+  padding: 2.4em 2em;
+}
+
+.signin-heading{
+  margin: 0 0 0.6em;
+  font-size: 1.3em;
+  font-weight: 800;
+  color: #123A37;
+}
+
+.field-label{
+  font-size: 0.82em;
+  font-weight: 700;
+  color: #123A37;
+  margin-top: 0.6em;
+}
+
+.island-right input[type="text"],
+.island-right input[type="email"],
+.island-right input[type="password"],
+.island-right select{
+  padding: 0.75em 0.9em;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.45);
+  color: #123A37;
+  font-size: 0.95em;
+  outline: none;
+  font-family: inherit;
+}
+
+.island-right input::placeholder{
+  color: #6B8B87;
+}
+
+.island-right input:focus,
+.island-right select:focus{
+  border-color: #157FA8;
+  background: rgba(255, 255, 255, 0.65);
+}
+
+.signin-btn{
+  margin-top: 1.2em;
+  padding: 0.85em 1em;
+  border: none;
+  border-radius: 12px;
+  background: #157FA8;
+  color: #ffffff;
+  font-size: 1em;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.signin-btn:hover{
+  background: #0E5F80;
+}
+
+/* Registration links: only the default hint shows until a role is
+   picked (":has()" rules below swap in the matching link instead) */
+.register-hint{
+  margin: 1.1em 0 0;
+  font-size: 0.88em;
+  text-align: center;
+}
+
+.register-hint-default{
+  display: block;
+  color: #5C7A76;
+}
+
+.register-link{
+  display: none;
+  color: #157FA8;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.register-link:hover{ text-decoration: underline; }
+
+.register-hint-admin{
+  display: none;
+  color: #8A8A8A;
+  font-style: italic;
+}
+
+/* ================================================================
+   ROLE-DEPENDENT SWITCHING (pure CSS, no JavaScript)
+   Uses the modern ":has()" selector: since the <select> lives
+   inside the same <form> (.login-island) as the left-panel preview
+   and the register links, we can react to which <option> is
+   currently selected and update BOTH areas at once.
+================================================================ */
+
+/* --- Consumer selected --- */
+.login-island:has(#roleSelect option[value="consumer"]:checked) .logo-default{ display: none; }
+.login-island:has(#roleSelect option[value="consumer"]:checked) .logo-consumer{ display: block; }
+.login-island:has(#roleSelect option[value="consumer"]:checked) .role-name-default{ display: none; }
+.login-island:has(#roleSelect option[value="consumer"]:checked) .role-name-consumer{ display: inline; }
+.login-island:has(#roleSelect option[value="consumer"]:checked) .register-hint-default{ display: none; }
+.login-island:has(#roleSelect option[value="consumer"]:checked) .reg-consumer{ display: inline-block; }
+
+/* --- Pharmacy selected --- */
+.login-island:has(#roleSelect option[value="pharmacy"]:checked) .logo-default{ display: none; }
+.login-island:has(#roleSelect option[value="pharmacy"]:checked) .logo-pharmacy{ display: block; }
+.login-island:has(#roleSelect option[value="pharmacy"]:checked) .role-name-default{ display: none; }
+.login-island:has(#roleSelect option[value="pharmacy"]:checked) .role-name-pharmacy{ display: inline; }
+.login-island:has(#roleSelect option[value="pharmacy"]:checked) .register-hint-default{ display: none; }
+.login-island:has(#roleSelect option[value="pharmacy"]:checked) .reg-pharmacy{ display: inline-block; }
+
+/* --- Manufacturer selected --- */
+.login-island:has(#roleSelect option[value="manufacturer"]:checked) .logo-default{ display: none; }
+.login-island:has(#roleSelect option[value="manufacturer"]:checked) .logo-manufacturer{ display: block; }
+.login-island:has(#roleSelect option[value="manufacturer"]:checked) .role-name-default{ display: none; }
+.login-island:has(#roleSelect option[value="manufacturer"]:checked) .role-name-manufacturer{ display: inline; }
+.login-island:has(#roleSelect option[value="manufacturer"]:checked) .register-hint-default{ display: none; }
+.login-island:has(#roleSelect option[value="manufacturer"]:checked) .reg-manufacturer{ display: inline-block; }
+
+/* --- Admin selected (hardcoded login, no registration link) --- */
+.login-island:has(#roleSelect option[value="admin"]:checked) .logo-default{ display: none; }
+.login-island:has(#roleSelect option[value="admin"]:checked) .logo-admin{ display: block; }
+.login-island:has(#roleSelect option[value="admin"]:checked) .role-name-default{ display: none; }
+.login-island:has(#roleSelect option[value="admin"]:checked) .role-name-admin{ display: inline; }
+.login-island:has(#roleSelect option[value="admin"]:checked) .register-hint-default{ display: none; }
+.login-island:has(#roleSelect option[value="admin"]:checked) .register-hint-admin{ display: block; }
+
+/* ================================================================
+   RESPONSIVE: stack the two panels on narrow screens
+================================================================ */
+@media (max-width: 640px){
+  .login-island{ flex-direction: column; }
+  .island-divider{ width: auto; height: 1px; margin: 0 2em; }
+}
+
+/* ================================================================
+   REGISTRATION CARDS (register_consumer/pharmacy/manufacturer.php)
+   Single-column glass card, reusing the same look as the login
+   island but without the split-panel layout.
+================================================================ */
+.register-card{
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(92%, 420px);
+  display: flex;
+  flex-direction: column;
+  gap: 0.4em;
+  padding: 2.4em 2.2em;
+  margin: 0;
+
+  background: rgba(255, 255, 255, 0.22);
+  backdrop-filter: blur(36px) saturate(200%);
+  -webkit-backdrop-filter: blur(36px) saturate(200%);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 26px;
+  box-shadow:
+    0 24px 70px rgba(21, 127, 168, 0.3),
+    inset 0 1px 1px rgba(255, 255, 255, 0.6);
+}
+
+.register-title{
+  margin: 0 0 0.1em;
+  font-size: 1.4em;
+  font-weight: 800;
+  color: #123A37;
+}
+
+.register-subtitle{
+  margin: 0 0 0.8em;
+  font-size: 0.88em;
+  color: #5C7A76;
+}
+
+
+/* === FEATURE ADD (requested by user): auto-dismiss banners ===
+   Both the login-error and registration success/error banners
+   share these classes, so this fixes it everywhere they're used.
+   Pure CSS (no JavaScript): the banner stays fully visible, then
+   fades out and is removed from layout after ~4.5s. */
+.register-error,
+.register-success{
+  animation: bannerAutoDismiss 5s ease forwards;
+}
+ 
+@keyframes bannerAutoDismiss{
+  0%   { opacity: 1; max-height: 4em; margin-bottom: 0.6em; padding: 0.7em 0.9em; }
+  85%  { opacity: 1; max-height: 4em; margin-bottom: 0.6em; padding: 0.7em 0.9em; }
+  100% { opacity: 0; max-height: 0;   margin-bottom: 0;      padding: 0 0.9em; overflow: hidden; visibility: hidden; }
+}
+/* === END FEATURE ADD === */
+
+
+.register-error{
+  background: rgba(217, 105, 90, 0.15);
+  border: 1px solid rgba(217, 105, 90, 0.4);
+  color: #B5453A;
+  padding: 0.7em 0.9em;
+  border-radius: 10px;
+  font-size: 0.88em;
+  margin-bottom: 0.6em;
+}
+
+.register-success{
+  background: rgba(27, 154, 128, 0.15);
+  border: 1px solid rgba(27, 154, 128, 0.4);
+  color: #157F65;
+  padding: 0.7em 0.9em;
+  border-radius: 10px;
+  font-size: 0.88em;
+  margin-bottom: 0.6em;
+}
+
+.register-card input[type="text"],
+.register-card input[type="email"],
+.register-card input[type="password"]{
+  padding: 0.75em 0.9em;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.45);
+  color: #123A37;
+  font-size: 0.95em;
+  outline: none;
+  font-family: inherit;
+}
+
+.register-card input::placeholder{
+  color: #6B8B87;
+}
+
+.register-card input:focus{
+  border-color: #157FA8;
+  background: rgba(255, 255, 255, 0.65);
+}
+
+.register-card .signin-btn{
+  margin-top: 1.2em;
+}
+
+.register-card .register-hint{
+  margin-top: 1em;
+  font-size: 0.88em;
+  text-align: center;
+  color: #5C7A76;
+}
+/* Freezes the leaf during the morph transition */
+.is-transitioning .leaf-img {
+    animation: none !important;
+    transform: translateY(0) rotate(0deg) !important;
+}
+:root { view-transition-name: none; }
